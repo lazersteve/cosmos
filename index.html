@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cosmological Scales Map 2D (with Triangulation)</title>
+    <script src="d3js.org"></script>
+    <!-- Simplified relative path -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app-container">
+    <div id="title-bar">Cosmological Scales Map</div>
+    
+    <div id="status-container" class="status-connecting">
+        Status: Connecting to local data set...
+    </div>
+
+    <div id="toolbox">
+        <details class="help-details">
+            <summary>Help/Info (Click to expand)</summary>
+            <p style="font-size: 10px; padding: 5px;">
+                Use the Observer Management section to place observers anywhere in the universe regardless of the current map view.
+            </p>
+        </details>
+
+        <strong>Universal Time (UTC):</strong>
+        <div id="utc-clock" class="time-display utc-connecting">Connecting...</div>
+
+        <strong>Data Source:</strong>
+        <div id="source-selection" style="display: flex; gap: 10px;">
+            <label><input type="radio" name="dataSource" value="local" checked onclick="setDataSource('local')"> Local Files</label>
+            <label><input type="radio" name="dataSource" value="web" onclick="setDataSource('web')"> Web API</label>
+        </div>
+
+        <strong>Data Tier Selection:</strong>
+        <div id="tier-selection" style="display: flex; gap: 5px; justify-content: space-around;">
+            <label><input type="radio" name="dataTier" value="solar" checked onclick="switchDataTier('solar')"> Solar System</label>
+            <label><input type="radio" name="dataTier" value="interstellar" onclick="switchDataTier('interstellar')"> Interstellar</label>
+            <label><input type="radio" name="dataTier" value="milkyway" onclick="switchDataTier('milkyway')"> Milky Way</label>
+        </div>
+
+        <strong>Navigation (2D Map View):</strong>
+        <div class="slider-container"> <label for="panX">Horizontal Pan</label> <input type="range" id="panX" min="-10000000" max="10000000" value="0" step="100000" oninput="handlePanSlider()"> </div>
+        <div class="slider-container"> <label for="panY">Vertical Pan</label> <input type="range" id="panY" min="-10000000" max="10000000" value="0" step="100000" oninput="handlePanSlider()"> </div>
+        <strong>Zoom Scale:</strong>
+        <button class="toolbox-button" onclick="setZoomScale('AU')">1 AU (Default)</button>
+        <button class="toolbox-button" onclick="setZoomScale('SolarSystem')">Solar System</button>
+        <button class="toolbox-button" onclick="setZoomScale('Interstellar')">Interstellar</button>
+        <button class="toolbox-button" onclick="resetView()">Reset View (Pan/Zoom)</button>
+        
+        <div class="select-container">
+            <strong>Center View & Sort:</strong>
+            <div class="select-controls">
+                <select id="object-select" onchange="centerViewToObject()">
+                    <option value="">Select Object</option>
+                </select>
+                <button class="toolbox-button sort-button" onclick="sortObjectsByName('asc')" aria-label="Sort Ascending">▲</button>
+                <button class="toolbox-button sort-button" onclick="sortObjectsByName('desc')" aria-label="Sort Descending">▼</button>
+            </div>
+        </div>
+
+        <div id="observer-management">
+            <strong>Observer Management (Absolute Positioning):</strong>
+            <p style="font-size: 10px;">Select target observer, choose tier, select object, then assign location.</p>
+            <select id="target-observer-select" style="width: 100%; margin-bottom: 5px;">
+                <option value="1">Observer 1 (Red)</option>
+                <option value="2">Observer 2 (Green)</option>
+                <option value="3">Observer 3 (Blue)</option>
+            </select>
+            <select id="placement-tier-select" style="width: 100%; margin-bottom: 5px;">
+                <option value="solar">Solar System Tier</option>
+                <option value="interstellar">Interstellar Tier</option>
+                <option value="milkyway">Milky Way Tier</option>
+            </select>
+            <select id="placement-object-select" style="width: 100%; margin-bottom: 5px;">
+                <option value="">Select Object to Assign Location</option>
+            </select>
+            <button class="toolbox-button" onclick="assignObserverLocation()">Assign Location</button>
+        </div>
+
+        <div id="upload-container">
+            <strong>Manual Data Load:</strong>
+            <input type="file" id="data-upload-input" accept=".json" style="width: 100%; box-sizing: border-box; margin-bottom: 5px;">
+            <button class="toolbox-button" onclick="handleManualUpload()">Load Selected JSON File</button>
+            <input type="text" id="data-url-input" placeholder="Enter custom JSON URL..." style="width: 100%; box-sizing: border-box; margin-top: 5px;">
+            <button class="toolbox-button" onclick="handleURLUpload()">Fetch from URL</button>
+        </div>
+        
+        <div class="calculator-container">
+            <strong>Triangulation Calculator:</strong>
+            <div style="margin-bottom: 10px;">
+                <label for="distance-unit-select">Display Units:</label>
+                <select id="distance-unit-select" onchange="calculateTriangulation()">
+                    <option value="LY" selected>Light-Years (LY)</option>
+                    <option value="AU">Astronomical Units (AU)</option>
+                    <option value="km">Kilometers (km)</option>
+                    <option value="pc">Parsecs (pc)</option>
+                    <option value="kpc">Kiloparsecs (kpc)</option>
+                    <option value="Mpc">Megaparsecs (Mpc)</option>
+                </select>
+            </div>
+            
+            <div>
+                <input type="checkbox" id="toggle-tri-lines" checked onchange="toggleTriangulationLines()">
+                <label for="toggle-tri-lines">Show Triangulation Lines</label>
+            </div>
+            <div class="calc-row">
+                <input type="checkbox" id="check-1" checked onchange="toggleSelect(1)">
+                <label for="check-1" class="color-red">Obs 1:</label>
+                <select id="calc-select-1"></select>
+                <button class="toolbox-button center-button" onclick="centerOnSelection(1)" title="Center map on selected observer">🛰️</button>
+                <button class="toolbox-button" onmouseover="showDetails(event, 1)" onmouseout="hideDetails()">Details</button>
+            </div>
+             <div class="calc-row">
+                <input type="checkbox" id="check-2" checked onchange="toggleSelect(2)">
+                <label for="check-2" class="color-green">Obs 2:</label>
+                <select id="calc-select-2"></select>
+                <button class="toolbox-button center-button" onclick="centerOnSelection(2)" title="Center map on selected observer">🛰️</button>
+                <button class="toolbox-button" onmouseover="showDetails(event, 2)" onmouseout="hideDetails()">Details</button>
+            </div>
+            <div class="calc-row">
+                <input type="checkbox" id="check-3" checked onchange="toggleSelect(3)">
+                <label for="check-3" class="color-blue">Obs 3:</label>
+                <select id="calc-select-3"></select>
+                <button class="toolbox-button center-button" onclick="centerOnSelection(3)" title="Center map on selected observer">🛰️</button>
+                <button class="toolbox-button" onmouseover="showDetails(event, 3)}" onmouseout="hideDetails()">Details</button>
+            </div>
+            
+            <button class="toolbox-button" onclick="calculateTriangulation()">Calculate Triangulation</button>
+            <div id="result-p1-p2" class="color-red" title=""></div>
+            <div id="result-p2-p3" class="color-green" title=""></div>
+            <div id="result-p3-p1" class="color-blue" title=""></div>
+        </div>
+    </div>
+    
+    <svg id="cosmos-map"></svg>
+</div>
+
+<div id="tooltip"></div>
+
+<script src="app.js"></script>
+
+</body>
+</html>

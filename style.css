@@ -85,3 +85,23 @@ body, html {
     margin: 0;
     padding: 0;
 }
+/* Add these rules to your style.css file */
+
+#toolbox, 
+#toolbox label, 
+#toolbox strong, 
+#toolbox p, 
+#title-bar,
+.time-display {
+    color: #333333; /* Forces text color to a dark gray */
+}
+
+/* Ensure the background color is a light gray */
+#toolbox {
+    background-color: #f4f4f4; 
+    /* The rest of your toolbox styles... */
+    width: 300px;
+    padding: 15px;
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}

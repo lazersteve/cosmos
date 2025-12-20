@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cosmological Scales Map (Auto Sync)</title>
+    <!-- You still need this D3 file to be available either online or downloaded locally -->
+    <script src="d3.v7.min.js"></script> 
+    <style> /* (Stylesheets remain the same as before) */
+        body { margin: 0; overflow: hidden; background-color: black; background-image: url('upload.wikimedia.org'); background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        #app-container { background-color: rgba(0, 0, 0, 0.85); border: 2px solid gold; border-radius: 10px; width: 90%; height: 90%; display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); position: relative; }
+        #title-bar { padding: 15px; text-align: center; font-family: serif; font-size: 24px; color: gold; border-bottom: 1px solid gray; position: relative; z-index: 10; }
+        #clock-ticker-container { position: absolute; top: 5px; left: 5px; padding: 5px; background-color: rgba(0, 0, 0, 0.6); border-radius: 5px; font-family: monospace; font-size: 14px; z-index: 11; color: white; }
+        .clock-display { padding: 2px 0; } .clock-label { font-weight: bold; margin-right: 5px; }
+        #local-time { color: deepskyblue; } #target-time { color: limegreen; }
+        #adjust-target-btn { background-color: #333; color: white; border: none; padding: 2px 5px; cursor: pointer; margin-left: 5px; }
+        #cosmos-map { flex-grow: 1; background-color: transparent; }
+        .planet { fill: blue; } .star { fill: white; } .sun { fill: #FFEB3B; }
+        #connection-status { color: gray; margin-top: 5px; }
+    </style>
+</head>
+<body>
+<div id="app-container">
+    <div id="clock-ticker-container">
+        <div class="clock-display" id="local-time"><span class="clock-label">Local Time:</span><span id="local-time-val"></span></div>
+        <div class="clock-display" id="target-time"><span class="clock-label">Target Time:</span><span id="target-time-val"></span><button id="adjust-target-btn" onclick="adjustTargetTimezone()">Adjust UTC Offset</button></div>
+        <div id="connection-status">Connection: Checking...</div>
+    </div>
+    <div id="title-bar">Cosmological Scales</div>
+    <svg id="cosmos-map"><text class="loading" x="20" y="40" style="fill: white; font-family: sans-serif;">Initializing map...</text></svg>
+</div>
+<script>
+    // --- Data Sources ---
+    const localFallbackData = [
+        { name: "Sun (Offline Data)", type: "sun", x: 0, y: 0, r: 10 },
+        { name: "Earth (Offline Data)", type: "planet", x: 100, y: 0, r: 2 },
+        { name: "Alpha Centauri (Offline Data)", type: "star", x: 5000000, y: 2000000, r: 50000 },
+    ];
+    const onlineDataSourceUrl = '127.0.0.1'; // Your Python Proxy URL
+
+    // --- Data Loading Logic ---
+    async function loadCosmicData() {
+        const statusElem = document.getElementById('connection-status');
+
+        if (navigator.onLine) {
+            statusElem.innerHTML = 'Connection: <span style="color: yellow;">Online, trying fetch...</span>';
+            try {
+                // Try fetching data via the Python proxy
+                const response = await fetch(onlineDataSourceUrl);
+                if (!response.ok) throw new Error('Server error or data format issue.');
+                const onlineData = await response.json();
+                statusElem.innerHTML = 'Connection: <span style="color: lime;">Online (Live Data)</span>';
+                return onlineData;
+            } catch (error) {
+                // Fetch failed (maybe server is down, even if navigator.onLine is true)
+                console.warn("Fetch failed, using local data:", error);
+                statusElem.innerHTML = 'Connection: <span style="color: orange;">Server offline, using cached data.</span>';
+                return localFallbackData;
+            }
+        } else {
+            // Browser explicitly reports offline status
+            statusElem.innerHTML = 'Connection: <span style="color: red;">Offline (Cached Data)</span>';
+            return localFallbackData;
+        }
+    }
+
+    // --- Rest of the Script (Clock, SVG Setup, D3 Initialization) ---
+    // [The rest of the JS code from the 'Offline-First HTML' response goes here]
+    // Note: The IIFE function (function initializeMap(data) { ... })(celestialObjectsData);
+    // needs to be changed to an async call:
+    loadCosmicData().then(data => {
+        // ... (rest of the D3 initialization code, binding 'data' to circles)
+        svg.select(".loading").remove(); 
+        g.selectAll("circle")
+          .data(data)
+          .enter()
+          .append("circle")
+          .attr("cx", d => d.x)
+          .attr("cy", d => d.y)
+          .attr("r", d => d.r)
+          .attr("class", d => d.type)
+          .append("title")
+          .text(d => d.name);
+        svg.call(zoom.transform, d3.zoomIdentity.translate(width / 2, height / 2).scale(1));
+    });
+
+</script>
+</body>
+</html>

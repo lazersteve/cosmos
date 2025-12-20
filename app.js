@@ -199,19 +199,22 @@ function fetchCosmicData(url) {
 function parseNasaJPLData(apiResponse) {
     const outputData = [];
     const targetData = apiResponse.data;
-    if (!targetData) { return outputData; }
+    // Basic check if data structure is correct
+    if (!targetData || !apiResponse.target) { return outputData; } 
+    
     const lines = targetData.split('\n');
     const dataLines = lines.filter(line => !line.startsWith('$$') && line.trim().length > 0);
     const targets = apiResponse.target;
     
     dataLines.forEach(line => {
+        // Split the line into an array of values
         const values = line.split(',');
         
-        // Assuming your data has x, y, z as the first three comma-separated values
-        const x = parseFloat(values[0]); // Access the first value
-        const y = parseFloat(values[1]); // Access the second value
-        const z = parseFloat(values[2]); // Access the third value
-        const objectId = values[3] ? values[3].trim() : 'Unknown'; // Access the fourth value and trim
+        // Assuming x is index 0, y is index 1, z is index 2, and ID is index 3
+        const x = parseFloat(values[0]); 
+        const y = parseFloat(values[1]);
+        const z = parseFloat(values[2]);
+        const objectId = values[3] ? values[3].trim() : 'Unknown'; // Get the 4th value
         
         const targetObj = targets.find(t => t === objectId);
         const name = targetObj ? targetObj : `Object ${objectId}`;
@@ -226,7 +229,7 @@ function parseNasaJPLData(apiResponse) {
         });
     });
     
-    // The function must return the processed data array
+    // Must return the processed data array
     return outputData; 
 }
 

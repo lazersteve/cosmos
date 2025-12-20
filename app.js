@@ -57,15 +57,9 @@ const CONVERSION_FACTORS_TO_LY = {
 if (typeof d3 === 'undefined') { 
     statusContainer.textContent = "Status: Error loading D3 library.";
     statusContainer.classList.add('status-error');
-    if (debugStatusDiv) {
-        debugStatusDiv.textContent = "Status: D3 failed to load.";
-    }
-    // setUtcStatus(false); // This function is undefined, commented out
+    if (debugStatusDiv) { debugStatusDiv.textContent = "Status: D3 failed to load."; }
 } else {
-    // ADDED DEBUG LINE
-    if (debugStatusDiv) {
-        debugStatusDiv.textContent = "Status: D3 loaded, App.js v1.2 running.";
-    }
+    if (debugStatusDiv) { debugStatusDiv.textContent = "Status: D3 loaded, App.js v1.2 running."; } // ADDED DEBUG UPDATE
 
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/service-worker.js')
@@ -122,6 +116,7 @@ async function requestBackgroundSync(registration) {
     }
 }
 
+
 // --- Observer Management Functions ---
 
 function loadPlacementObjects() {
@@ -173,7 +168,7 @@ function switchDataTier(tierName) {
 function handleURLUpload() {
     const url = dataUrlInput.value;
     if (url) {
-        fetchCosmicData(url, false); // Don't use fallback for manual URL entry
+        fetchCosmicData(url, false); 
     } else {
         alert("Please enter a valid URL.");
     }
@@ -269,10 +264,11 @@ function parseNasaJPLData(apiResponse) {
     dataLines.forEach(line => {
         const values = line.split(',');
         
-        const x = parseFloat(values[0]); 
-        const y = parseFloat(values[1]);
-        const z = parseFloat(values[2]);
-        const objectId = values[3] ? values[3].trim() : 'Unknown'; 
+        // Access specific array indices for x, y, z, ID
+        const x = parseFloat(values[0]); // Corrected: Must access index [0]
+        const y = parseFloat(values[1]); // Corrected: Must access index [1]
+        const z = parseFloat(values[2]); // Corrected: Must access index [2]
+        const objectId = values[3] ? values[3].trim() : 'Unknown'; // Corrected: Must access index [3]
         
         const targetObj = targets.find(t => t === objectId);
         const name = targetObj ? targetObj : `Object ${objectId}`;

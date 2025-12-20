@@ -203,19 +203,31 @@ function parseNasaJPLData(apiResponse) {
     const lines = targetData.split('\n');
     const dataLines = lines.filter(line => !line.startsWith('$$') && line.trim().length > 0);
     const targets = apiResponse.target;
+    
     dataLines.forEach(line => {
         const values = line.split(',');
-        const x = parseFloat(values);
-        const y = parseFloat(values);
-        const z = parseFloat(values);
-        const objectId = values.trim();
+        
+        // Assuming your data has x, y, z as the first three comma-separated values
+        const x = parseFloat(values[0]); // Access the first value
+        const y = parseFloat(values[1]); // Access the second value
+        const z = parseFloat(values[2]); // Access the third value
+        const objectId = values[3] ? values[3].trim() : 'Unknown'; // Access the fourth value and trim
+        
         const targetObj = targets.find(t => t === objectId);
         const name = targetObj ? targetObj : `Object ${objectId}`;
+        
         outputData.push({
-            id: objectId, name: name, type: name.includes('Sun') ? 'sun' : 'planet', x: x, y: y, z: z
+            id: objectId, 
+            name: name, 
+            type: name.includes('Sun') ? 'sun' : 'planet', 
+            x: x, 
+            y: y,
+            z: z
         });
     });
-    return outputData;
+    
+    // The function must return the processed data array
+    return outputData; 
 }
 
 function parseSimbadData(apiResponse) {

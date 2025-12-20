@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Cosmological Scales Map 2D (with Triangulation)</title>
-    <!-- ... other head elements ... --> <!-- FIX 1: Use a standard CDN link with https:// protocol --> <script src="d3js.org"></script>
-<script src="lib/d3.v7.min.js"></script> <!-- Simplified relative path (This line is correct if style.css is local) --> <link rel="stylesheet" href="style.css"> 
-
-    <!-- Simplified relative path -->
+    
+    <!-- ONLY the correct local D3 file link -->
+    <script src="lib/d3.v7.min.js"></script> 
+    
+    <!-- ONLY the correct stylesheet link -->
     <link rel="stylesheet" href="./style.css">
 </head>
 <body>
@@ -29,6 +30,7 @@
         <strong>Universal Time (UTC):</strong>
         <div id="utc-clock" class="time-display utc-connecting">Connecting...</div>
 
+        <!-- The Data Source selection was removed as app.js handles it automatically -->
 
         <strong>Data Tier Selection:</strong>
         <div id="tier-selection" style="display: flex; gap: 5px; justify-content: space-around;">
@@ -136,6 +138,7 @@
 
 <div id="tooltip"></div>
 
+<!-- The main app logic is here -->
 <script src="app.js"></script>
 
 </body>

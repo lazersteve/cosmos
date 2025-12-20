@@ -1,0 +1,44 @@
+[
+  {
+    "id": "sol",
+    "name": "Sol (Sun)",
+    "type": "star",
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0
+  },
+  {
+    "id": "alpha_centauri_a",
+    "name": "Alpha Centauri A",
+    "type": "star",
+    "x": -0.052,
+    "y": 3.126,
+    "z": -3.047,
+    "imageUrl": "upload.wikimedia.org"
+  },
+  {
+    "id": "barnards_star",
+    "name": "Barnard's Star",
+    "type": "star",
+    "x": 1.449,
+    "y": 4.958,
+    "z": 2.980,
+    "imageUrl": "www.eso.org"
+  },
+  {
+    "id": "wolf_359",
+    "name": "Wolf 359",
+    "type": "star",
+    "x": 6.522,
+    "y": -1.916,
+    "z": -3.938
+  },
+  {
+    "id": "lalande_21185",
+    "name": "Lalande 21185",
+    "type": "star",
+    "x": 7.553,
+    "y": -3.439,
+    "z": -0.308
+  }
+]

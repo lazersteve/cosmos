@@ -1,0 +1,28 @@
+[
+  {
+    "id": "galactic_center",
+    "name": "Sagittarius A* (Center)",
+    "type": "sun",
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0,
+    "imageUrl": "upload.wikimedia.org"
+  },
+  {
+    "id": "sun_position",
+    "name": "Sol (Sun) Position",
+    "type": "star",
+    "x": 8.1,
+    "y": 0.0,
+    "z": 0.0
+  },
+  {
+    "id": "m31_andromeda",
+    "name": "Andromeda Galaxy (M31)",
+    "type": "galaxy",
+    "x": -769.0,
+    "y": 0.0,
+    "z": 0.0,
+    "imageUrl": "upload.wikimedia.org"
+  }
+]

@@ -1,0 +1,83 @@
+[
+  {
+    "id": "sun",
+    "name": "Sol (Sun)",
+    "type": "sun",
+    "x": 0.0,
+    "y": 0.0,
+    "z": 0.0,
+    "imageUrl": "upload.wikimedia.org"
+  },
+  {
+    "id": "mercury",
+    "name": "Mercury",
+    "type": "planet",
+    "x": 0.387,
+    "y": 0.0,
+    "z": 0.0,
+    "imageUrl": "upload.wikimedia.org"
+  },
+  {
+    "id": "venus",
+    "name": "Venus",
+    "type": "planet",
+    "x": 0.723,
+    "y": 0.0,
+    "z": 0.0,
+    "imageUrl": "upload.wikimedia.org"
+  },
+  {
+    "id": "earth",
+    "name": "Earth",
+    "type": "planet",
+    "x": 1.0,
+    "y": 0.0,
+    "z": 0.0,
+    "imageUrl": "upload.wikimedia.org"
+  },
+  {
+    "id": "mars",
+    "name": "Mars",
+    "type": "planet",
+    "x": 1.524,
+    "y": 0.0,
+    "z": 0.0,
+    "imageUrl": "upload.wikimedia.org"
+  },
+  {
+    "id": "jupiter",
+    "name": "Jupiter",
+    "type": "planet",
+    "x": 5.203,
+    "y": 0.0,
+    "z": 0.0,
+    "imageUrl": "upload.wikimedia.org"
+  },
+  {
+    "id": "saturn",
+    "name": "Saturn",
+    "type": "planet",
+    "x": 9.537,
+    "y": 0.0,
+    "z": 0.0,
+    "imageUrl": "upload.wikimedia.org"
+  },
+  {
+    "id": "uranus",
+    "name": "Uranus",
+    "type": "planet",
+    "x": 19.189,
+    "y": 0.0,
+    "z": 0.0,
+    "imageUrl": "upload.wikimedia.org"
+  },
+  {
+    "id": "neptune",
+    "name": "Neptune",
+    "type": "planet",
+    "x": 30.069,
+    "y": 0.0,
+    "z": 0.0,
+    "imageUrl": "upload.wikimedia.org"
+  }
+]

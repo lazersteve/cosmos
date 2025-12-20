@@ -13,6 +13,7 @@ const targetObserverSelect = document.getElementById('target-observer-select');
 const placementTierSelect = document.getElementById('placement-tier-select');
 const placementObjectSelect = document.getElementById('placement-object-select');
 const distanceUnitSelect = document.getElementById('distance-unit-select');
+const debugStatusDiv = document.getElementById('debug-status'); // ADDED DEBUG VAR
 
 let rawData = []; 
 let currentTier = 'solar'; 
@@ -56,8 +57,16 @@ const CONVERSION_FACTORS_TO_LY = {
 if (typeof d3 === 'undefined') { 
     statusContainer.textContent = "Status: Error loading D3 library.";
     statusContainer.classList.add('status-error');
+    if (debugStatusDiv) {
+        debugStatusDiv.textContent = "Status: D3 failed to load.";
+    }
     // setUtcStatus(false); // This function is undefined, commented out
 } else {
+    // ADDED DEBUG LINE
+    if (debugStatusDiv) {
+        debugStatusDiv.textContent = "Status: D3 loaded, App.js v1.2 running.";
+    }
+
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/service-worker.js')
           .then(registration => { 
@@ -67,14 +76,10 @@ if (typeof d3 === 'undefined') {
           .catch(registrationError => { console.log('SW registration failed: ', registrationError); });
     }
 
-    // Start by attempting web data fetch, which has a fallback to local
     fetchCosmicData(DATA_REPOSITORIES['web'][currentTier]); 
     setInterval(updateClock, 1000);
     placementTierSelect.addEventListener('change', loadPlacementObjects);
     loadPlacementObjects();
-
-    // Ensure global window functions for HTML are still defined if the HTML expects them
-    window.setDataSource = function(source) { console.warn("setDataSource is deprecated."); };
     window.switchDataTier = switchDataTier;
     // Placeholders for functions assumed to be defined elsewhere in your original code
     window.handlePanSlider = function(){}; 
@@ -117,7 +122,6 @@ async function requestBackgroundSync(registration) {
     }
 }
 
-
 // --- Observer Management Functions ---
 
 function loadPlacementObjects() {
@@ -159,17 +163,13 @@ function assignObserverLocation() {
 
 // --- Data Handling Functions ---
 
-// setDataSource function removed as requested
-
 function switchDataTier(tierName) {
     if (currentTier !== tierName) {
         currentTier = tierName;
-        // Automatically uses new fetch logic (web primary, local fallback)
         fetchCosmicData(DATA_REPOSITORIES['web'][currentTier]); 
     }
 }
 
-// handleURLUpload updated to use new fetch logic correctly
 function handleURLUpload() {
     const url = dataUrlInput.value;
     if (url) {
@@ -206,14 +206,14 @@ function handleManualUpload() {
 function fetchCosmicData(url, useFallback = true) {
     statusContainer.textContent = `Status: Connecting to ${url}...`;
     statusContainer.classList.add('status-connecting');
+    if (debugStatusDiv) debugStatusDiv.textContent = `Status: Fetching ${url}`;
 
-    // Set a 5-second timeout for the web request
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(new DOMException('Request timed out', 'TimeoutError')), 5000); 
 
     d3.json(url, { signal: controller.signal })
       .then(data => {
-          clearTimeout(timeoutId); // Clear the timeout if successful
+          clearTimeout(timeoutId); 
 
           rawData = data;
           let parsedData = data;
@@ -228,16 +228,19 @@ function fetchCosmicData(url, useFallback = true) {
           statusContainer.textContent = `Status: Data from ${url} processed successfully.`;
           statusContainer.classList.remove('status-connecting', 'status-error');
           statusContainer.classList.add('status-success'); 
+          if (debugStatusDiv) debugStatusDiv.textContent = `Status: Success from ${url}`;
 
       })
       .catch(error => {
-          clearTimeout(timeoutId); // Clear the timeout if an error occurred
+          clearTimeout(timeoutId); 
+          if (debugStatusDiv) debugStatusDiv.textContent = `Status: Fetch failed for ${url}`;
+
 
           if (error.name === 'TimeoutError' && useFallback) {
               console.warn("Web request timed out. Falling back to local data...");
               statusContainer.textContent = "Status: Web API timed out. Attempting local fallback...";
               const localUrl = DATA_REPOSITORIES['local'][currentTier];
-              fetchCosmicData(localUrl, false); // Fetch local data, without falling back again
+              fetchCosmicData(localUrl, false); 
           } else if (useFallback) {
               console.error("Error fetching data, falling back:", error);
               statusContainer.textContent = `Status: Error loading data from ${url}. Attempting local fallback.`;
@@ -257,7 +260,6 @@ function fetchCosmicData(url, useFallback = true) {
 function parseNasaJPLData(apiResponse) {
     const outputData = [];
     const targetData = apiResponse.data;
-    // Basic check if data structure is correct
     if (!targetData || !apiResponse.target) { return outputData; } 
     
     const lines = targetData.split('\n');
@@ -265,14 +267,12 @@ function parseNasaJPLData(apiResponse) {
     const targets = apiResponse.target;
     
     dataLines.forEach(line => {
-        // Split the line into an array of values
         const values = line.split(',');
         
-        // Access specific array indices for x, y, z, and objectId
         const x = parseFloat(values[0]); 
         const y = parseFloat(values[1]);
         const z = parseFloat(values[2]);
-        const objectId = values[3] ? values[3].trim() : 'Unknown'; // Access the 4th value and trim
+        const objectId = values[3] ? values[3].trim() : 'Unknown'; 
         
         const targetObj = targets.find(t => t === objectId);
         const name = targetObj ? targetObj : `Object ${objectId}`;
@@ -287,39 +287,5 @@ function parseNasaJPLData(apiResponse) {
         });
     });
     
-    // The function must return the processed data array
     return outputData; 
-}
-
-
-// Function to process and scale data (add actual logic here)
-function processAndScaleData(data, sourceUrl) {
-    console.log("Data successfully processed in processAndScaleData:", data);
-    // You would add your scaling and coordinate transformations here
-    // Example: data.forEach(d => { d.x_scaled = d.x * currentScaleFactor; });
-
-    // Call your D3 drawing function here
-    drawVisualization(data);
-}
-
-// Function to draw the D3 visualization (add actual D3 join here)
-function drawVisualization(data) {
-    console.log("Attempting to draw visualization with data:", data);
-
-    // This is where your D3 data join and element appending logic goes.
-    // Example D3 logic to draw circles on your SVG:
-    /*
-    const svg = d3.select("#cosmos-map");
-    const selection = svg.selectAll("circle")
-       .data(data, d => d.id); // Use a key function if data changes
-
-    selection.enter()
-       .append("circle")
-       .attr("cx", d => d.x_scaled)
-       .attr("cy", d => d.y_scaled)
-       .attr("r", 5) // Example radius
-       .style("fill", "white"); // Example color
-
-    selection.exit().remove();
-    */
 }

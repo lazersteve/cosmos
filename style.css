@@ -105,3 +105,11 @@ body, html {
     overflow-y: auto;
     box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
+
+/* Add this rule to the VERY BOTTOM of style.css */
+#title-bar {
+    color: gold !important; /* Forces the color to be gold */
+    font-size: 1.5em; /* Make the title a bit bigger */
+    padding: 10px 0; /* Give it some space */
+    text-align: center; /* Center the text */
+}

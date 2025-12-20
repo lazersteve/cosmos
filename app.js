@@ -116,8 +116,6 @@ async function requestBackgroundSync(registration) {
         console.log("Background Sync API not supported.");
     }
 }
-
-
 // --- Observer Management Functions ---
 
 function loadPlacementObjects() {
@@ -254,8 +252,6 @@ function fetchCosmicData(url, useFallback = true) {
           }
       });
 }
-
-
 // parseNasaJPLData updated with array access fixes and completion (FIXED/UPDATED)
 function parseNasaJPLData(apiResponse) {
     const outputData = [];
@@ -271,7 +267,7 @@ function parseNasaJPLData(apiResponse) {
         // Split the line into an array of values
         const values = line.split(',');
         
-        // Access specific array indices for x, y, z
+        // Access specific array indices for x, y, z, and objectId
         const x = parseFloat(values[0]); 
         const y = parseFloat(values[1]);
         const z = parseFloat(values[2]);

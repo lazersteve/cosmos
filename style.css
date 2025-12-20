@@ -59,3 +59,29 @@ body {
     stroke-dasharray: 4, 2;
     pointer-events: none;
 }
+/* Add this to your style.css file */
+
+#app-container {
+    display: flex; /* Use Flexbox for layout */
+    height: 100vh; /* Make the app container fill the vertical screen height */
+    overflow: hidden; /* Hide main scrollbar, allow components inside to scroll */
+}
+
+#toolbox {
+    width: 300px; /* Give the sidebar a fixed width */
+    padding: 15px;
+    overflow-y: auto; /* Add vertical scrollbar if content is too long */
+    background-color: #f4f4f4; /* Add a background color so it looks like a sidebar */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+}
+
+#cosmos-map {
+    flex-grow: 1; /* Make the map take up all remaining horizontal space */
+    /* You will need other D3 specific CSS here, which is likely missing */
+}
+
+/* General CSS resets */
+body, html {
+    margin: 0;
+    padding: 0;
+}

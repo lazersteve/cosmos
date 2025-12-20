@@ -1,34 +1,79 @@
-body { 
-    margin: 0; overflow: hidden; background-color: black; 
+/* --- style.css file content: Consolidated Version --- */
+
+/* General CSS resets */
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: sans-serif;
+    background-color: black; 
+    /* Using a specific example image URL here; you might need to change this */
     background-image: url('upload.wikimedia.org');
-    background-size: cover; background-position: center; display: flex; justify-content: center; align-items: center; height: 100vh;
+    background-size: cover; 
+    background-position: center; 
+    height: 100vh;
+    overflow: hidden; /* Hide main scrollbar */
 }
+
 #app-container {
-    background-color: rgba(0, 0, 0, 0.75); border: 2px solid gold; border-radius: 10px; width: 90%; height: 90%;
-    display: flex; flex-direction: column; box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); position: relative;
+    display: flex; /* Use Flexbox for layout */
+    flex-direction: row; /* Main layout is row: sidebar and map side-by-side */
+    height: 100vh; 
+    overflow: hidden; 
+    background-color: rgba(0, 0, 0, 0.75); 
+    /* The 90% width/height was causing issues, stick to 100vh for full screen app */
 }
+
 #title-bar {
-    padding: 15px; text-align: center; font-family: serif; font-size: 24px; color: gold; border-bottom: 1px solid gray;
+    padding: 10px 0; 
+    text-align: center; 
+    font-family: serif; 
+    font-size: 1.5em; /* Use em for scaling */
+    color: gold !important; /* Forces the color to be gold */
+    border-bottom: 1px solid gray;
+    /* You need a specific URL for this image as well */
     background-image: url('upload.wikimedia.org');
-    background-size: cover; background-position: center; text-shadow: 0 0 5px black, 0 0 5px black;
+    background-size: cover; 
+    background-position: center; 
+    text-shadow: 0 0 5px black, 0 0 5px black;
 }
+
 #status-container {
     text-align: center; padding: 5px; font-family: sans-serif; font-size: 14px; background-color: rgba(0, 0, 0, 0.5);
+    color: white; /* Default status text color */
 }
 .status-connecting { color: orange; } 
-.status-connected { color: limegreen; } 
+.status-success { color: limegreen; } /* Added success class */
 .status-error { color: red; }
 .utc-connecting { color: orange; }
 .utc-connected { color: cyan; } 
 
-#cosmos-map { flex-grow: 1; background-color: transparent; }
-.planet, .star, .sun { cursor: pointer; stroke: rgba(255, 255, 255, 0.5); stroke-width: 0.5; }
-.planet { fill: blue; } .star { fill: white; } .sun { fill: #FFEB3B; }
-#toolbox {
-    position: absolute; top: 95px; right: 10px; background-color: rgba(30, 30, 30, 0.9); border: 1px solid gold;
-    border-radius: 5px; padding: 10px; color: white; font-family: sans-serif; z-index: 10;
-    display: flex; flex-direction: column; gap: 10px; max-height: 80%; overflow-y: auto;
+#cosmos-map { 
+    flex-grow: 1; /* Map takes remaining space */
+    background-color: transparent; 
+    /* D3 needs the map area to exist within a container */
 }
+
+#toolbox {
+    width: 300px; /* Give the sidebar a fixed width */
+    padding: 15px;
+    overflow-y: auto; /* Add vertical scrollbar if content is too long */
+    background-color: rgba(30, 30, 30, 0.9); /* Dark theme background */
+    border: 1px solid gold;
+    border-radius: 5px; 
+    color: white; /* Default text color in toolbox */
+    font-family: sans-serif; 
+    z-index: 10;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); 
+    display: flex; flex-direction: column; gap: 10px; 
+    /* Removed absolute positioning since we are using flexbox now */
+}
+
+/* Ensure text is visible even with general styles */
+#toolbox, #toolbox label, #toolbox strong, #toolbox p, .time-display {
+    color: white; 
+}
+
+
 .help-details summary { cursor: pointer; color: #aaa; margin-bottom: 5px; }
 
 .time-display { 
@@ -45,71 +90,10 @@ body {
     max-width: 200px; text-align: left;
 }
 #tooltip img { max-width: 100%; height: auto; margin-bottom: 5px; border-radius: 3px; }
-.center-button {
-    padding: 4px 6px;
-    font-size: 10px;
-    margin-left: 5px;
-}
-.sort-button {
-    font-size: 14px;
-    width: 35px;
-    padding: 5px;
-}
-.triangulation-line {
-    stroke-dasharray: 4, 2;
-    pointer-events: none;
-}
-/* Add this to your style.css file */
+.center-button { padding: 4px 6px; font-size: 10px; margin-left: 5px; }
+.sort-button { font-size: 14px; width: 35px; padding: 5px; }
+.triangulation-line { stroke-dasharray: 4, 2; pointer-events: none; }
 
-#app-container {
-    display: flex; /* Use Flexbox for layout */
-    height: 100vh; /* Make the app container fill the vertical screen height */
-    overflow: hidden; /* Hide main scrollbar, allow components inside to scroll */
-}
+.planet, .star, .sun { cursor: pointer; stroke: rgba(255, 255, 255, 0.5); stroke-width: 0.5; }
+.planet { fill: blue; } .star { fill: white; } .sun { fill: #FFEB3B; }
 
-#toolbox {
-    width: 300px; /* Give the sidebar a fixed width */
-    padding: 15px;
-    overflow-y: auto; /* Add vertical scrollbar if content is too long */
-    background-color: #f4f4f4; /* Add a background color so it looks like a sidebar */
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-}
-
-#cosmos-map {
-    flex-grow: 1; /* Make the map take up all remaining horizontal space */
-    /* You will need other D3 specific CSS here, which is likely missing */
-}
-
-/* General CSS resets */
-body, html {
-    margin: 0;
-    padding: 0;
-}
-/* Add these rules to your style.css file */
-
-#toolbox, 
-#toolbox label, 
-#toolbox strong, 
-#toolbox p, 
-#title-bar,
-.time-display {
-    color: #333333; /* Forces text color to a dark gray */
-}
-
-/* Ensure the background color is a light gray */
-#toolbox {
-    background-color: #f4f4f4; 
-    /* The rest of your toolbox styles... */
-    width: 300px;
-    padding: 15px;
-    overflow-y: auto;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-}
-
-/* Add this rule to the VERY BOTTOM of style.css */
-#title-bar {
-    color: gold !important; /* Forces the color to be gold */
-    font-size: 1.5em; /* Make the title a bit bigger */
-    padding: 10px 0; /* Give it some space */
-    text-align: center; /* Center the text */
-}
